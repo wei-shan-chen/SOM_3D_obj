@@ -83,11 +83,14 @@ int main()
 
 	Shader ourShader("shader/vShader.vs", "shader/fShader.fs");	
 
-	OBJmodel objModel;
-	objModel.LoadOBJfile("obj/halfCylinder.obj");
-	SOM_Create(objModel.vertex_tri, objModel.pointNum, objModel.m_MaxPos, objModel.m_MinPos);
+	OBJmodel inputData;
+	OBJmodel latticeModel;
+	inputData.LoadOBJfile("obj/tea.obj");
+	latticeModel.LoadOBJfile("obj/donut.obj");
+	// SOM_Create(inputData.vertex_tri, inputData.pointNum, inputData.m_MaxPos, inputData.m_MinPos);
+	SOM_Create(inputData.vertex_tri, inputData.pointNum, inputData.m_MaxPos, inputData.m_MinPos);
 	create_world();
-	Item objmodel(objModel.m_MeshTri);
+	Item inputdata(inputData.m_MeshTri);
 	Item lattice_square_four_edges(world.lattice_square_four_edges);
 	glEnable(GL_DEPTH_TEST);
 
@@ -138,13 +141,19 @@ int main()
         ourShader.setVec3("color", glm::vec3(1.0,0.0,0.0));
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glBindVertexArray(lattice_square_four_edges.VAO);
-        glDrawArrays(GL_LINES, 0, world.lattice_square_four_edges.size());
+		// if(latticeModel.Isline)
+        	glDrawArrays(GL_LINES, 0, world.lattice_square_four_edges.size());
+		// else
+		// 	glDrawArrays(GL_TRIANGLES, 0, world.lattice_square_four_edges.size());
 
 		// input dataset(stl model) 
 		ourShader.setVec3("color", 1.0f, 1.0f, 0.0f);
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glBindVertexArray(objmodel.VAO);
-		glDrawArrays(GL_TRIANGLES, 0, objModel.triNum);
+		glBindVertexArray(inputdata.VAO);
+		if(inputData.Isline)
+			glDrawArrays(GL_LINES, 0, inputData.triNum);
+		else
+			glDrawArrays(GL_TRIANGLES, 0, inputData.triNum);
 	
 		
         ImGui::Render();
